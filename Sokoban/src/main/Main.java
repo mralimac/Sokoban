@@ -6,9 +6,12 @@ public class Main
 {
 
 	public static void main(String[] args) 
-	{
-		GUI graphicInterface = new gui.GUI(10, 10);
-		//graphicInterface.generateScreen();
+	{		
+		//GUI graphics = new GUI();		
+		//graphics.movePlayer();
+		//graphics.generateScreen();
+		Gameplay game1 = new Gameplay();
+		game1.countNumOfLevels("nah");
 	}
 
 }
