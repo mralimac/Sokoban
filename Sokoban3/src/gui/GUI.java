@@ -80,7 +80,7 @@ public class GUI extends Application {
 		//Got this from Stackoverflow cause its the best/only way to do this
 		for(Node gridObject : grid.getChildren())
 		{
-			if(GridPane.getColumnIndex(gridObject) == yCoord && GridPane.getRowIndex(gridObject) == xCoord)
+			if(GridPane.getColumnIndex(gridObject) == xCoord && GridPane.getRowIndex(gridObject) == yCoord)
 			{
 				if(gridObject instanceof Rectangle)
 				{
@@ -94,8 +94,22 @@ public class GUI extends Application {
 		return null;
 	}
 	
+	public void moveTheCrate(int xCoord, int yCoord, int direction)
+	{
+		switch(direction)
+		{
+		case 1: yCoord--;
+		break;
+		case 2: xCoord++;
+		break;
+		case 3: yCoord++;
+		break;
+		case 4: xCoord--;
+		}
+	}
 	
-	public boolean canThePlayerMoveInThatDirection(int xCoord, int yCoord, int direction)
+	
+	public boolean isThereACrateInDirection(int xCoord, int yCoord, int direction)
 	{
 		switch(direction)
 		{
@@ -109,7 +123,29 @@ public class GUI extends Application {
 		}
 		
 		Rectangle objectInGrid = getObjectInGridPane(xCoord, yCoord);
-		if(objectInGrid.getFill().equals(Color.YELLOW))
+		if(objectInGrid.getFill().equals(Color.BROWN))
+		{
+			return false;
+		}		
+		
+		return true;
+	}
+	
+	public boolean isDirectionPossible(int xCoord, int yCoord, int direction)
+	{
+		switch(direction)
+		{
+		case 1: yCoord--;
+		break;
+		case 2: xCoord++;
+		break;
+		case 3: yCoord++;
+		break;
+		case 4: xCoord--;
+		}
+		
+		Rectangle objectInGrid = getObjectInGridPane(xCoord, yCoord);
+		if(objectInGrid.getFill().equals(Color.RED))
 		{
 			return false;
 		}		
@@ -139,7 +175,7 @@ public class GUI extends Application {
 						
 				System.out.println("Key typed: " + event.getCharacter());
 				if (event.getCharacter().equals("w")) {
-					if(canThePlayerMoveInThatDirection(newXCoord, newYCoord, 1))
+					if(isDirectionPossible(newXCoord, newYCoord, 1))
 		        	{
 		        		newYCoord--;	
 		        		System.out.println("Move UP");
@@ -152,7 +188,7 @@ public class GUI extends Application {
 		            
 		        }
 		        if (event.getCharacter().equals("s")) {
-		        	if(canThePlayerMoveInThatDirection(newXCoord, newYCoord, 3))
+		        	if(isDirectionPossible(newXCoord, newYCoord, 3))
 		        	{
 		        		newYCoord++;	
 		        		System.out.println("Move DOWN");
@@ -166,7 +202,7 @@ public class GUI extends Application {
 		           
 		        }
 		        if (event.getCharacter().equals("d")) {
-		        	if(canThePlayerMoveInThatDirection(newXCoord, newYCoord, 2))
+		        	if(isDirectionPossible(newXCoord, newYCoord, 2))
 		        	{
 		        		newXCoord++;	
 		        		System.out.println("Move RIGHT");
@@ -177,7 +213,7 @@ public class GUI extends Application {
 		        	}
 		        }
 		        if (event.getCharacter().equals("a")) {
-		        	if(canThePlayerMoveInThatDirection(newXCoord, newYCoord, 4))
+		        	if(isDirectionPossible(newXCoord, newYCoord, 4))
 		        	{
 		        		newXCoord--;	
 		        		System.out.println("Move LEFT");
@@ -217,13 +253,13 @@ public class GUI extends Application {
 		Rectangle squareTile = new Rectangle();		
 		squareTile.setFill(colour);
 		
-//		squareTile.setOnMouseClicked(new EventHandler<MouseEvent>()
-//        {
-//            @Override
-//            public void handle(MouseEvent t) {
-//            	squareTile.setFill(Color.RED);
-//            }
-//        });
+		squareTile.setOnMouseClicked(new EventHandler<MouseEvent>()
+        {
+            @Override
+            public void handle(MouseEvent t) {
+            	squareTile.setFill(Color.RED);
+            }
+        });
 		
 		squareTile.setWidth(50);
 		squareTile.setHeight(50);
@@ -246,7 +282,7 @@ public class GUI extends Application {
 			{		
 				if(xCoord == 0 || xCoord == this.gridWidth-1 || yCoord == 0 || yCoord == this.gridHeight-1)
 				{
-					addTileToGrid(xCoord, yCoord, Color.YELLOW);
+					addTileToGrid(xCoord, yCoord, Color.RED);
 				}
 				else
 				{

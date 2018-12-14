@@ -6,10 +6,11 @@ public class Wall extends Tile
 {
 
 	public Wall(int xCoord, int yCoord) {
-		super(xCoord, yCoord);
+		super(xCoord, yCoord, new Image("assets/Wall.png", 100, 100, false, false), "Wall");
 		this.xCoord = xCoord;
-		this.yCoord = yCoord;
+		this.yCoord = yCoord;		
 		this.tileImage = new Image("assets/Wall.png", 100, 100, false, false);
+		rectangle.setId("Wall");
 	}
 
 }
