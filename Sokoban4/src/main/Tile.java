@@ -13,6 +13,11 @@ public class Tile extends Coords implements GUI {
 	
 	public Tile(int xCoord, int yCoord, Image tileImage, String tileType)
 	{
+		
+//		if(tileType == "Crate" || tileType == "Player")
+//		{
+//			new Floor(xCoord, yCoord);
+//		}
 		this.xCoord = xCoord;
 		this.yCoord = yCoord;	
 		this.tileType = tileType;
@@ -22,8 +27,10 @@ public class Tile extends Coords implements GUI {
 		
 		
 		rectangle.setFill(new ImagePattern(tileImage));
-		GridPane.setColumnIndex(rectangle, this.xCoord);
-		GridPane.setRowIndex(rectangle, this.yCoord);			
+		GridPane.setConstraints(rectangle, this.xCoord, this.yCoord);
+		
+//		GridPane.setColumnIndex(rectangle, this.xCoord);
+//		GridPane.setRowIndex(rectangle, this.yCoord);			
 		grid.getChildren().addAll(rectangle);
 		
 	}

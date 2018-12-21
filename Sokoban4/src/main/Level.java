@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class Level {
 	private int levelNumber;
-	private int numberOfSteps;
+	
 	
 	private ArrayList<Diamond> listOfDiamonds = new ArrayList<Diamond>();
 	private ArrayList<Tile> listOfTiles = new ArrayList<Tile>();
@@ -18,6 +18,16 @@ public class Level {
 	{
 		this.levelNumber = levelNumber;
 		loadLevel();
+	}
+	
+	public int getLevelWidth()
+	{
+		return this.listOfLines.get(1).length() *  50;
+	}
+	
+	public int getLevelHeight()
+	{
+		return this.listOfLines.size() * 50;
 	}
 	
 	public void loadLevel() throws IOException
@@ -36,6 +46,7 @@ public class Level {
 			}
 			
 			buildObjects();
+			bufferedFile.close();
 			
 		} catch (FileNotFoundException e) {			
 			System.out.println("Warning! File not Found");
@@ -65,7 +76,7 @@ public class Level {
 				case " ": listOfTiles.add(new Floor(xCoord,yCoord));
 					//System.out.println("Adding new Floor");
 				break;
-				case "*": listOfTiles.add(new Crate(xCoord,yCoord));
+				case "*": listOfTiles.add(new Crate(xCoord, yCoord));				
 					//System.out.println("Adding new Crate");
 				break;
 				case "@": listOfTiles.add(new Player(xCoord,yCoord));
@@ -74,8 +85,9 @@ public class Level {
 				case "X": listOfTiles.add(new Wall(xCoord,yCoord));
 					//System.out.println("Adding new Wall");
 				break;
-				case ".": listOfTiles.add(new Diamond(xCoord,yCoord));
-					listOfDiamonds.add(new Diamond(xCoord,yCoord));
+				case ".": Diamond diamond = new Diamond(xCoord, yCoord); 
+				listOfDiamonds.add(diamond);
+				listOfTiles.add(diamond);
 					//System.out.println("Adding new Diamond");
 				break;
 				}
