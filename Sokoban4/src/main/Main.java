@@ -8,25 +8,19 @@ import javafx.scene.Scene;
 
 import javafx.stage.Stage;
 
-public class Main extends Application
+public class Main extends Application implements GUI
 {	
-	//public GridPane grid = new GridPane();
-	
 	public static void main(String[] args) 
 	{
 		launch();
 	}
 	
-	@SuppressWarnings("unused")
-	public void start(Stage primaryStage) throws Exception
+	public void start(Stage unusedStagePlzIgnore) throws Exception
 	{		
-		//GridPane grid = new GridPane();
-		Level level1 = new Level(1);
-		
-		Scene scene = new Scene(GUI.grid, 1200, 800);
+		new Gameplay();
+		primaryStage.setResizable(false);
 	    primaryStage.setTitle("Sokoban");
-	    primaryStage.setScene(scene);
+	    primaryStage.setScene(new Scene(GUI.grid));
 	    primaryStage.show();
 	}
-	
 }

@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 public class Wall extends Tile
 {
 
+	//Constructor Section
 	public Wall(int xCoord, int yCoord) {
 		super(xCoord, yCoord, new Image("assets/Wall.png", 100, 100, false, false), "Wall");
 		this.xCoord = xCoord;
@@ -12,5 +13,5 @@ public class Wall extends Tile
 		this.tileImage = new Image("assets/Wall.png", 100, 100, false, false);
 		rectangle.setId("Wall");
 	}
-
+	//End Constructor
 }

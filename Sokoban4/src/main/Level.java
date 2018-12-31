@@ -6,20 +6,38 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Level {
+public class Level implements GUI{
+	
+	//Attributes Section
 	private int levelNumber;
-	private int numberOfSteps;
-	
-	private ArrayList<Diamond> listOfDiamonds = new ArrayList<Diamond>();
-	private ArrayList<Tile> listOfTiles = new ArrayList<Tile>();
+	private Player thePlayer;
+	private ArrayList<Tile> listOfTiles = new ArrayList<Tile>(); //This array of tiles holds multiple different objects, therefore making it polymorphic
 	private ArrayList<String> listOfLines = new ArrayList<String>();
+	//End Attributes
 	
+	//Constructor Section
 	public Level(int levelNumber) throws IOException
 	{
 		this.levelNumber = levelNumber;
 		loadLevel();
 	}
+	//End Constructor
 	
+	//Method Section
+	
+	//Returns the level width in pixels
+	public int getLevelWidth()
+	{
+		return this.listOfLines.get(1).length() *  50;
+	}
+	
+	//Returns the level height in pixels
+	public int getLevelHeight()
+	{
+		return this.listOfLines.size() * 50 +40;
+	}
+	
+	//Loads the level by reading the file and calling the buildObjects method
 	public void loadLevel() throws IOException
 	{
 		String filePath = getFilePath();
@@ -36,17 +54,16 @@ public class Level {
 			}
 			
 			buildObjects();
+			bufferedFile.close();
 			
-		} catch (FileNotFoundException e) {			
+		} catch (FileNotFoundException e) {
+			//If file is not found, this exception is thrown. An example of exception handling
 			System.out.println("Warning! File not Found");
 			e.printStackTrace();
 		}
-		
-		
 	}
 	
-	
-
+	//This method builds the level by reading the file and adding the object relevant to the character in the file
 	public void buildObjects()
 	{
 		int xCoord = 0;
@@ -62,21 +79,25 @@ public class Level {
 				
 				switch(currentchar)
 				{
-				case " ": listOfTiles.add(new Floor(xCoord,yCoord));
-					//System.out.println("Adding new Floor");
+				case " ": listOfTiles.add(new Floor(xCoord,yCoord));					
 				break;
-				case "*": listOfTiles.add(new Crate(xCoord,yCoord));
-					//System.out.println("Adding new Crate");
+				
+				case "*": Crate crate = new Crate(xCoord, yCoord);
+				listOfTiles.add(crate);
+				winHandler.addCrate(crate);
 				break;
-				case "@": listOfTiles.add(new Player(xCoord,yCoord));
-					System.out.println("Adding new Player\n" + "X: " + xCoord + ", Y:" + yCoord);
+				
+				case "@": Player thePlayer = new Player(xCoord,yCoord);
+				listOfTiles.add(thePlayer);
+				this.thePlayer = thePlayer;
 				break;
-				case "X": listOfTiles.add(new Wall(xCoord,yCoord));
-					//System.out.println("Adding new Wall");
+				
+				case "X": listOfTiles.add(new Wall(xCoord,yCoord));					
 				break;
-				case ".": listOfTiles.add(new Diamond(xCoord,yCoord));
-					listOfDiamonds.add(new Diamond(xCoord,yCoord));
-					//System.out.println("Adding new Diamond");
+				
+				case ".": Diamond diamond = new Diamond(xCoord, yCoord); 
+				winHandler.addDiamond(diamond);
+				listOfTiles.add(diamond);
 				break;
 				}
 				xCoord++;
@@ -87,6 +108,19 @@ public class Level {
 		}
 	}
 	
+	//This method returns the current level number. An example of encapsulation
+	public int getLevelNumber()
+	{
+		return this.levelNumber;
+	}
+	
+	//This method return the player object. An example of encapsulation
+	public Player getPlayer()
+	{
+		return this.thePlayer;
+	}
+	
+	//This method gets the filepath for a file
 	public String getFilePath()
 	{
 		switch(this.levelNumber)
@@ -99,6 +133,6 @@ public class Level {
 		}
 		return null;
 	}
-	
+	//End Method
 	
 }
