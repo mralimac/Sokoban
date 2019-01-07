@@ -21,16 +21,18 @@ public class Player extends MoveableTile
 	//End Constructor
 	
 	//Method Section
-	public void addMovementHandling(KeyEvent event)
+	public boolean addMovementHandling(KeyEvent event)
 	{
+		boolean returnCondition = false;
 		rectangle.toFront();
 		int newXCoord = getXCoord();
 		int newYCoord = getYCoord();						
-		 
+		returnCondition = false;
 		if (event.getCharacter().equals("w")) {
 			if(generalMovementHandler(newXCoord, newYCoord, 1))
         	{						
         		newYCoord--;
+        		returnCondition = true;
         	}
         }
 		
@@ -38,6 +40,7 @@ public class Player extends MoveableTile
         	if(generalMovementHandler(newXCoord, newYCoord, 3))
         	{		        		
         		newYCoord++;
+        		returnCondition = true;
         	}
         }
         
@@ -45,6 +48,7 @@ public class Player extends MoveableTile
         	if(generalMovementHandler(newXCoord, newYCoord, 2))
         	{		        		
         		newXCoord++;
+        		returnCondition = true;
         	}
         }
         
@@ -52,6 +56,7 @@ public class Player extends MoveableTile
         	if(generalMovementHandler(newXCoord, newYCoord, 4))
         	{		        		
         		newXCoord--;
+        		returnCondition = true;
         	}
         }
         
@@ -61,7 +66,8 @@ public class Player extends MoveableTile
         setYCoord(newYCoord);
         GridPane.setConstraints(rectangle,  getXCoord(), getYCoord());
         rectangle.toFront();
-	}
+        return returnCondition;
+    }
 	
 	//I couldn't work out where I would need overriding, so I made this method which is an example of it
 	public void overRiding()

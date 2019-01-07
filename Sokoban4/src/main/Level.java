@@ -34,7 +34,7 @@ public class Level implements GUI{
 	//Returns the level height in pixels
 	public int getLevelHeight()
 	{
-		return this.listOfLines.size() * 50 +40;
+		return this.listOfLines.size() * 50 +90;
 	}
 	
 	//Loads the level by reading the file and calling the buildObjects method

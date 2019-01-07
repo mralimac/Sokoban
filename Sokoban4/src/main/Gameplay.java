@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 
 public class Gameplay implements GUI{
@@ -18,7 +19,7 @@ public class Gameplay implements GUI{
 	//Attributes Section
 	private ArrayList<File> listOfFiles = new ArrayList<File>();
 	private Level currentLevel;
-	private int stepsTaken;
+	private int stepsTaken = -1;
 	//End Attributes
 	
 	//Constructor Section
@@ -42,7 +43,7 @@ public class Gameplay implements GUI{
 	
 	//Method Section
 	//This method generates the main menu and its buttons
-	public void generateMenu()
+	private void generateMenu()
 	{
 		primaryStage.setWidth(getWidthOfWindow());
 	    primaryStage.setHeight(getHeightOfWindow());
@@ -92,7 +93,7 @@ public class Gameplay implements GUI{
 		
 	}
 	
-	public void generateWinScreen()
+	private void generateWinScreen()
 	{
 		primaryStage.setWidth(getWidthOfWindow());
 	    primaryStage.setHeight(getHeightOfWindow());
@@ -107,7 +108,7 @@ public class Gameplay implements GUI{
 		GridPane.setConstraints(winLabel, 1, 0);
 		grid.getChildren().add(winLabel);
 		
-		//Creates and adds the label indiciating how many steps the player took
+		//Creates and adds the label indicating how many steps the player took
 		Label stepCounter = new Label("You took " + this.stepsTaken + " steps");
 		stepCounter.setFont(Font.font("Verdana", 15));
 		stepCounter.setAlignment(Pos.CENTER);
@@ -115,11 +116,7 @@ public class Gameplay implements GUI{
 		grid.getChildren().add(stepCounter);
 		
 	    //Create button to play again and its listener
-	    Button playAgain = new Button("Play Again");
-	    playAgain.setAlignment(Pos.CENTER);
-	    playAgain.setMinWidth(getWidthOfWindow()/3);
-	    playAgain.setMinHeight(getHeightOfWindow()/3);
-	    playAgain.setOnMouseClicked(new EventHandler<MouseEvent>()
+	    Button playAgain = createButton("Reset Level", new EventHandler<MouseEvent>()
         {
             @Override
             public void handle(MouseEvent t) {
@@ -136,11 +133,7 @@ public class Gameplay implements GUI{
 	    grid.getChildren().add(playAgain);
 	    
 	    //Create button to pick another level and its listener
-	    Button goToLevelMenu = new Button("Pick another level");
-	    goToLevelMenu.setAlignment(Pos.CENTER);
-	    goToLevelMenu.setMinWidth(getWidthOfWindow()/3);
-	    goToLevelMenu.setMinHeight(getHeightOfWindow()/3);
-	    goToLevelMenu.setOnMouseClicked(new EventHandler<MouseEvent>()
+	    Button goToLevelMenu = createButton("Go to Main Menu", new EventHandler<MouseEvent>()
         {
             @Override
             public void handle(MouseEvent t) {
@@ -153,11 +146,7 @@ public class Gameplay implements GUI{
 		grid.getChildren().add(goToLevelMenu);
 		
 		//Create button to exit program
-		Button exitButton = new Button("Exit Program");
-		exitButton.setAlignment(Pos.CENTER);
-		exitButton.setMinWidth(getWidthOfWindow()/3);
-	    exitButton.setMinHeight(getHeightOfWindow()/3);
-	    exitButton.setOnMouseClicked(new EventHandler<MouseEvent>()
+		Button exitButton = createButton("Exit Program", new EventHandler<MouseEvent>()
         {
             @Override
             public void handle(MouseEvent t) {            	
@@ -167,23 +156,88 @@ public class Gameplay implements GUI{
 		GridPane.setConstraints(exitButton, 2, 1);
 		grid.getChildren().add(exitButton);
 	}
+
+	private Button createButton(String buttonTitle, EventHandler<MouseEvent> doThisOnClick)
+	{
+		Button button = new Button(buttonTitle);
+		button.setAlignment(Pos.CENTER);
+	    button.setOnMouseClicked(doThisOnClick);
+	    return button;
+	}
 	
 	//This method loads up the selected level and also adds the handling for the player
-	public void loadLevel(int levelToLoad) throws IOException
+	private void loadLevel(int levelToLoad) throws IOException
 	{
 		resetAll();
 		this.currentLevel = new Level(levelToLoad);
 		primaryStage.setWidth(getWidthOfWindow());
 	    primaryStage.setHeight(getHeightOfWindow());
+	    
+	    HBox levelInfoBox = new HBox();
+	    Label levelNumber = new Label("Level " + levelToLoad);
+	    levelInfoBox.setAlignment(Pos.CENTER);
+	    levelInfoBox.setPrefWidth(getWidthOfWindow()/3);		
+	    levelInfoBox.getChildren().add(levelNumber);	    
+	    
+		HBox controlInterface = new HBox();
+		controlInterface.setAlignment(Pos.CENTER);		
+		controlInterface.setPrefWidth(getWidthOfWindow()/3);
+		controlInterface.getChildren().addAll(
+			createButton("Reset Level", new EventHandler<MouseEvent>()
+	        {
+	            @Override
+	            public void handle(MouseEvent t) {
+	            	try {
+	            		winHandler.setToWin(false);
+	            		voidTheLevel();
+						loadLevel(levelToLoad);
+					} catch (IOException e) {					
+						e.printStackTrace();
+					}
+	            }
+	        }), createButton("Go to Main Menu", new EventHandler<MouseEvent>()
+	        {
+	            @Override
+	            public void handle(MouseEvent t) {
+	            	winHandler.setToWin(false);
+	            	voidTheLevel();
+					generateMenu();
+	            }
+	        }), createButton("Exit Program", new EventHandler<MouseEvent>()
+	        {
+	            @Override
+	            public void handle(MouseEvent t) {            	
+					System.exit(0);
+	            }
+	        })
+		);
 		
+		HBox stepCounterBox = new HBox();
+		Label stepCount = new Label("Steps Taken: " + stepsTaken);
+		stepCounterBox.setAlignment(Pos.CENTER);
+		stepCounterBox.setPrefWidth(getWidthOfWindow()/3);
+		stepCounterBox.getChildren().add(stepCount);
+		
+		HBox topLayer = new HBox();
+	    topLayer.setMaxHeight(50);
+	    topLayer.setPrefWidth(getWidthOfWindow());
+	    topLayer.setPrefHeight(50);
+	    topLayer.getChildren().addAll(levelInfoBox, controlInterface, stepCounterBox);
+	    borderPane.setTop(topLayer);
+	    
 		Player playerObject = this.currentLevel.getPlayer();
 		playerObject.getRect().setOnKeyTyped(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent event) {
 				
 				//This method adds the movement handling for the player
-				playerObject.addMovementHandling(event);
-				stepsTaken++;
+				
+				if(playerObject.addMovementHandling(event))
+				{
+					stepsTaken++;
+					stepCount.setText("Steps Taken: " + stepsTaken);
+				}
+				
 				//This little if statement forces the game to be won by pressing T
 				if (event.getCharacter().equals("t")) {
 					winHandler.setToWin(true);
@@ -206,7 +260,7 @@ public class Gameplay implements GUI{
 
 	//This tells the GUI what width (in pixels) the screen should be depending on what is currently needed
 	//If there is a level in play, it makes a window relevant to the level, if not then it generates a static window based
-	public int getWidthOfWindow()
+	private int getWidthOfWindow()
 	{
 		Level level = getCurrentLevel();
 		if(level == null && !winHandler.isWin())
@@ -260,6 +314,7 @@ public class Gameplay implements GUI{
 		winHandler.clearAll();
 		grid.setVgap(0);
 		grid.setHgap(0);
+		borderPane.setTop(null);
 	}
 	
 	//End Method

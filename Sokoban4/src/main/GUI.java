@@ -1,5 +1,7 @@
 package main;
 
+
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
@@ -7,6 +9,7 @@ import javafx.stage.Stage;
 //Used for handling the GUI over the entire project
 public interface GUI 
 {
+	BorderPane borderPane = new BorderPane();
 	GridPane grid = new GridPane();
 	Stage primaryStage = new Stage();
 	WinHandler winHandler = new WinHandler();
