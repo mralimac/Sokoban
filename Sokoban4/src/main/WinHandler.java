@@ -3,18 +3,22 @@ package main;
 import java.util.ArrayList;
 
 import javafx.scene.Node;
+import javafx.scene.layout.GridPane;
 
-public class WinHandler implements GUI{
+public class WinHandler
+{
 	
 	//Attributes Section
 	private ArrayList<Diamond> listOfDiamonds = new ArrayList<Diamond>();
 	private ArrayList<Crate> listOfCrates = new ArrayList<Crate>();	
 	private boolean won = false;
+	private GridPane grid;
 	//End Attributes
 	
 	//Constructor Section
-	public WinHandler()
+	public WinHandler(GridPane grid)
 	{
+		this.grid = grid;
 		this.won = false;	
 	}
 	//End Constructor

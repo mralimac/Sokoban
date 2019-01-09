@@ -7,7 +7,7 @@ import javafx.application.Application;
 
 import javafx.stage.Stage;
 
-public class Main extends Application implements GUI
+public class Main extends Application
 {	
 	public static void main(String[] args) 
 	{
@@ -15,9 +15,9 @@ public class Main extends Application implements GUI
 		launch();
 	}
 	
-	public void start(Stage unusedStagePlzIgnore) throws Exception
+	public void start(Stage primaryStage) throws Exception
 	{	
-		new Setup();
-		new Gameplay();
+		Setup setup = new Setup(primaryStage);
+		new Gameplay(primaryStage, setup.getBorderPane(), setup.getGridPane());
 	}
 }

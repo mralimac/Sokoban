@@ -10,7 +10,8 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
 //Abstraction. This is the general tile class that all tile classes use
-public abstract class Tile implements GUI {
+//As this extends GUI and uses an Interface, this makes this class (and all the subclasses) polymorphic
+public abstract class Tile extends GUI implements TilePlacement{
 	
 	//Attributes Section
 	private int xCoord;
@@ -18,21 +19,21 @@ public abstract class Tile implements GUI {
 	private Image tileImage;
 	private Rectangle rectangle;
 	private String tileType;
-	private Tooltip toolTip;
+	private Tooltip toolTip;	
 	//End Attributes
 	
 	//Constructor Section
-	public Tile(int xCoord, int yCoord, Image tileImage, String tileType)
+	public Tile(int xCoord, int yCoord, Image tileImage, String tileType, GridPane grid)
 	{
 		this.xCoord = xCoord;
 		this.yCoord = yCoord;	
 		this.tileType = tileType;
 		this.tileImage = tileImage;
 		this.rectangle = new Rectangle();
+		this.setGrid(grid);
 		rectangle.setWidth(50);
 		rectangle.setHeight(50);
 		rectangle.setFill(new ImagePattern(this.tileImage));
-		createToolTip();
 		getRect().setOnMouseEntered(new EventHandler<MouseEvent>()
         {
             @Override
@@ -49,9 +50,9 @@ public abstract class Tile implements GUI {
             }
         });
 		GridPane.setConstraints(rectangle, this.xCoord, this.yCoord);
-		grid.setVgap(0);
-		grid.setHgap(0);
-		grid.getChildren().addAll(rectangle);		
+		getGrid().setVgap(0);
+		getGrid().setHgap(0);
+		getGrid().getChildren().addAll(rectangle);		
 	}	
 	//End Constructor
 	
@@ -108,20 +109,20 @@ public abstract class Tile implements GUI {
 		this.toolTip = toolTip;
 	}
 	
+	//As this method exists both here and in Player, this is an example of Overriding. This was done so Player could create its own Tooltip
 	public void addToolTip(MouseEvent event)
 	{
+		this.toolTip = new Tooltip("xCoord: " + getXCoord() + "\nyCoord: "  + getYCoord() + "\nTileType: " + getTileType());
 		this.toolTip.show(getRect(), event.getScreenX()+10, event.getScreenY()-50);
 	}
 	
 	public void removeToolTip()
 	{
 		this.toolTip.hide();
+		this.toolTip = null;
 	}
 	
-	public void createToolTip()
-	{
-		this.toolTip = new Tooltip("xCoord: " + this.xCoord + "\nyCoord: "  + this.yCoord + "\nTileType: " + this.tileType);
-	}
+	
 	
 	//End Method
 }

@@ -11,13 +11,15 @@ import javafx.scene.layout.GridPane;
 public class Player extends MoveableTile
 {
 	//Constructor Section
-	public Player(int xCoord, int yCoord) {
-		super(xCoord, yCoord, new Image("assets/Player.png", 100, 100, false, false), "Player");
-		new Floor(xCoord, yCoord);
-		setImage(new Image("assets/Player.png", 100, 100, false, false));
+	public Player(int xCoord, int yCoord, GridPane grid) {
+		super(xCoord, yCoord, new Image("assets/Player.png", 100, 100, false, false), "Player", grid);
+		new Floor(xCoord, yCoord, grid);
+		setTileXCoord(xCoord);
+		setTileYCoord(yCoord);
+		setTileType("Player");
+		setTileImage(new Image("assets/Player.png", 100, 100, false, false));
 		getRect().toFront();
 		getRect().setFocusTraversable(true);
-		getRect().setId("Player");
 		createToolTip();
 		
 	}
@@ -65,23 +67,49 @@ public class Player extends MoveableTile
         
        
 
-        setXCoord(newXCoord);
-        setYCoord(newYCoord);
+        setTileXCoord(newXCoord);
+        setTileYCoord(newYCoord);
         GridPane.setConstraints(getRect(),  getXCoord(), getYCoord());
         getRect().toFront();
         return returnCondition;
     }
 	
-	
+	//This method overrides the method in Tile
 	public void createToolTip()
-		{
-			setToolTip(new Tooltip("xCoord: " + getXCoord() 
-								+ "\nyCoord: "  + getYCoord()
-								+ "\nName: Roah"
-								+ "\nOccupation: Warehouse Keeper"
-								));
-		}
+	{
+		setToolTip(new Tooltip("xCoord: " + getXCoord() 
+							+ "\nyCoord: "  + getYCoord()
+							+ "\nName: Roah"
+							+ "\nOccupation: Warehouse Keeper"
+							));
 	}
+	
+
+	
+	@Override
+	public void setTileImage(Image image) {
+		setImage(image);
+	}
+	
+	@Override
+	public void setTileType(String tileType) {
+		getRect().setId(tileType);
+		
+	}
+	
+	@Override
+	public void setTileXCoord(int xCoord) {
+		setXCoord(xCoord);
+		
+	}
+	
+	@Override
+	public void setTileYCoord(int yCoord) {
+		setYCoord(yCoord);
+		
+	}
+	
+}
 	//End Method
 
 	

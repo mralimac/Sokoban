@@ -1,16 +1,23 @@
 package main;
 
-
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
 
-//An example of an interface 
-//Used for handling the GUI over the entire project
-public interface GUI 
-{
-	BorderPane borderPane = new BorderPane();
-	GridPane grid = new GridPane();
-	Stage primaryStage = new Stage();
-	WinHandler winHandler = new WinHandler();
+//used to be an interface, but was reformed, and slimmed down into an abstract class to reduce coupling
+public abstract class GUI 
+{	
+	//Attributes Sections
+	private GridPane grid;
+	//End Attributes
+	
+	//Methods Section
+	public void setGrid(GridPane grid)
+	{
+		this.grid = grid;
+	}
+	
+	public GridPane getGrid()
+	{
+		return this.grid;
+	}
+	//End Method
 }

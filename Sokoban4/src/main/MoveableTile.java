@@ -14,8 +14,9 @@ public abstract class MoveableTile extends Tile{
 	//End Attributes
 	
 	//Constructor Section
-	public MoveableTile(int xCoord, int yCoord, Image tileImage, String tileType) {
-		super(xCoord, yCoord, tileImage, tileType);
+	public MoveableTile(int xCoord, int yCoord, Image tileImage, String tileType, GridPane grid) {
+		super(xCoord, yCoord, tileImage, tileType, grid);
+		
 		
 	}
 	//End Constructor
@@ -28,7 +29,7 @@ public abstract class MoveableTile extends Tile{
 	{
 		//Got this from StackOverflow cause its the best/only way to do this
 		//https://stackoverflow.com/questions/20655024/javafx-gridpane-retrieve-specific-cell-content
-		for(Node gridObject : grid.getChildren())
+		for(Node gridObject : getGrid().getChildren())
 		{
 			if(GridPane.getColumnIndex(gridObject) == xCoord && GridPane.getRowIndex(gridObject) == yCoord )
 			{
@@ -157,11 +158,11 @@ public abstract class MoveableTile extends Tile{
 		
 		if(doWeNeedToPlaceADiamond(xCoord, yCoord))
 		{
-			GridPane.setConstraints(new Diamond(xCoord, yCoord).getRect(), xCoord, yCoord);
+			GridPane.setConstraints(new Diamond(xCoord, yCoord, getGrid()).getRect(), xCoord, yCoord);
 		}
 		else
 		{
-			GridPane.setConstraints(new Floor(xCoord, yCoord).getRect(), xCoord, yCoord);
+			GridPane.setConstraints(new Floor(xCoord, yCoord, getGrid()).getRect(), xCoord, yCoord);
 		}
 		
 		//if(crate != null) crate.toFront();
@@ -186,8 +187,8 @@ public abstract class MoveableTile extends Tile{
 		}
 			
 		
-		grid.getChildren().remove(existingTile);
-		
+		getGrid().getChildren().remove(existingTile);
+		//new Crate(xCoord, yCoord, getGrid());
 		GridPane.setConstraints(crate, xCoord, yCoord);		
 		
 		crate.toFront();

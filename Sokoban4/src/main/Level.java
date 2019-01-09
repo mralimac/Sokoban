@@ -6,18 +6,25 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Level implements GUI{
+import javafx.scene.layout.GridPane;
+
+public class Level
+{
 	
 	//Attributes Section
 	private int levelNumber;
 	private Player thePlayer;
-	private ArrayList<Tile> listOfTiles = new ArrayList<Tile>(); //This array of tiles holds multiple different objects, therefore making it polymorphic
+	private ArrayList<Tile> listOfTiles = new ArrayList<Tile>();
 	private ArrayList<String> listOfLines = new ArrayList<String>();
+	private WinHandler winHandle;
+	private GridPane grid;
 	//End Attributes
 	
 	//Constructor Section
-	public Level(int levelNumber) throws IOException
+	public Level(int levelNumber, WinHandler winHandle, GridPane grid) throws IOException
 	{
+		this.grid = grid;
+		this.winHandle = winHandle;
 		this.levelNumber = levelNumber;
 		loadLevel();
 	}
@@ -63,12 +70,12 @@ public class Level implements GUI{
 		}
 	}
 	
+	
 	//This method builds the level by reading the file and adding the object relevant to the character in the file
 	public void buildObjects()
 	{
 		int xCoord = 0;
-		int yCoord = 0;
-		
+		int yCoord = 0;		
 		for(int i = 0; i < listOfLines.size(); i++)
 		{
 			xCoord = 0;
@@ -79,24 +86,24 @@ public class Level implements GUI{
 				
 				switch(currentchar)
 				{
-				case " ": listOfTiles.add(new Floor(xCoord,yCoord));					
+				case " ": listOfTiles.add(new Floor(xCoord,yCoord, this.grid));					
 				break;
 				
-				case "*": Crate crate = new Crate(xCoord, yCoord);
+				case "*": Crate crate = new Crate(xCoord, yCoord, this.grid);
 				listOfTiles.add(crate);
-				winHandler.addCrate(crate);
+				winHandle.addCrate(crate);
 				break;
 				
-				case "@": Player thePlayer = new Player(xCoord,yCoord);
+				case "@": Player thePlayer = new Player(xCoord,yCoord, this.grid);
 				listOfTiles.add(thePlayer);
 				this.thePlayer = thePlayer;
 				break;
 				
-				case "X": listOfTiles.add(new Wall(xCoord,yCoord));					
+				case "X": listOfTiles.add(new Wall(xCoord,yCoord, this.grid));					
 				break;
 				
-				case ".": Diamond diamond = new Diamond(xCoord, yCoord); 
-				winHandler.addDiamond(diamond);
+				case ".": Diamond diamond = new Diamond(xCoord, yCoord, this.grid); 
+				winHandle.addDiamond(diamond);
 				listOfTiles.add(diamond);
 				break;
 				}

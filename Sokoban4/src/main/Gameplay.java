@@ -10,26 +10,36 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 
-public class Gameplay implements GUI{
+public class Gameplay{
 	
 	//Attributes Section
 	private ArrayList<File> listOfFiles = new ArrayList<File>();
 	private Level currentLevel;
-	private int stepsTaken = -1;
+	private int stepsTaken;
+	private Stage primaryStage;
+	private BorderPane borderPane;
+	private WinHandler winHandle;
+	private GridPane grid;
 	//End Attributes
 	
 	//Constructor Section
-	public Gameplay()
+	public Gameplay(Stage primaryStage, BorderPane borderPane, GridPane grid)
 	{
 		//This block gets all the level files in the folder
 		String folderPath = "src/levels/";
 		File levelFolder = new File(folderPath);
-		File[] listOfLevelFiles = levelFolder.listFiles();		
+		File[] listOfLevelFiles = levelFolder.listFiles();
+		this.primaryStage = primaryStage;
 		int numberOfFiles = listOfLevelFiles.length;
+		this.borderPane = borderPane;
+		this.grid = grid;
+		this.winHandle = new WinHandler(grid);
 		
 		for(int i = 0; i < numberOfFiles; i++)
 		{
@@ -155,7 +165,7 @@ public class Gameplay implements GUI{
             @Override
             public void handle(MouseEvent t) {
             	try {
-            		winHandler.setToWin(false);
+            		winHandle.setToWin(false);
             		voidTheLevel();
 					loadLevel(levelNumber);
 				} catch (IOException e) {					
@@ -170,7 +180,7 @@ public class Gameplay implements GUI{
         {
             @Override
             public void handle(MouseEvent t) {
-            	winHandler.setToWin(false);
+            	winHandle.setToWin(false);
             	voidTheLevel();
 				generateMenu();
             }
@@ -200,8 +210,8 @@ public class Gameplay implements GUI{
 	private void loadLevel(int levelToLoad) throws IOException
 	{
 		resetAll();
-		this.stepsTaken = -1;
-		this.currentLevel = new Level(levelToLoad);
+		this.stepsTaken = 0;
+		this.currentLevel = new Level(levelToLoad, winHandle, grid);
 		primaryStage.setWidth(getWidthOfWindow());
 	    primaryStage.setHeight(getHeightOfWindow());
 	    
@@ -220,7 +230,7 @@ public class Gameplay implements GUI{
 	            @Override
 	            public void handle(MouseEvent t) {
 	            	try {
-	            		winHandler.setToWin(false);
+	            		winHandle.setToWin(false);
 	            		voidTheLevel();
 						loadLevel(levelToLoad);
 					} catch (IOException e) {					
@@ -231,7 +241,7 @@ public class Gameplay implements GUI{
 	        {
 	            @Override
 	            public void handle(MouseEvent t) {
-	            	winHandler.setToWin(false);
+	            	winHandle.setToWin(false);
 	            	voidTheLevel();
 					generateMenu();
 	            }
@@ -261,7 +271,7 @@ public class Gameplay implements GUI{
 		playerObject.getRect().setOnKeyTyped(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent event) {
-				winHandler.checkIfGameIsWon();
+				winHandle.checkIfGameIsWon();
 				//This method adds the movement handling for the player
 				
 				if(playerObject.addMovementHandling(event))
@@ -272,7 +282,7 @@ public class Gameplay implements GUI{
 				
 				//This little if statement forces the game to be won by pressing T
 				if (event.getCharacter().equals("t")) {
-					winHandler.setToWin(true);
+					winHandle.setToWin(true);
 				}
 				
 				//This quits to main menu by pressing Q
@@ -282,7 +292,7 @@ public class Gameplay implements GUI{
 				}
 				
 				//This if statement checks if the game has been won or not
-				if(winHandler.isWin())
+				if(winHandle.isWin())
 				{
 					generateWinScreen();
 				}
@@ -295,11 +305,11 @@ public class Gameplay implements GUI{
 	private int getWidthOfWindow()
 	{
 		Level level = getCurrentLevel();
-		if(level == null && !winHandler.isWin())
+		if(level == null && !winHandle.isWin())
 		{
 			return 500;
 		}
-		else if(winHandler.isWin())
+		else if(winHandle.isWin())
 		{
 			return 500;
 		}
@@ -311,11 +321,11 @@ public class Gameplay implements GUI{
 	public int getHeightOfWindow()
 	{
 		Level level = getCurrentLevel();
-		if(level == null&& !winHandler.isWin())
+		if(level == null&& !winHandle.isWin())
 		{
 			return 425;
 		}
-		else if(winHandler.isWin())
+		else if(winHandle.isWin())
 		{
 			return 425;
 		}
@@ -344,7 +354,7 @@ public class Gameplay implements GUI{
 	{
 		
 		grid.getChildren().clear();
-		winHandler.clearAll();
+		winHandle.clearAll();
 		grid.setVgap(0);
 		grid.setHgap(0);
 		borderPane.setTop(null);
