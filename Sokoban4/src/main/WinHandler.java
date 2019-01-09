@@ -63,11 +63,12 @@ public class WinHandler implements GUI{
 	{
 		for(Node gridObject : grid.getChildren())
 		{
-			if(gridObject.getId() == "Diamond")
+			if(gridObject.getId().equals("Diamond"))
 			{
 				return false;
 			}
 		}
+		System.out.println("No Diamonds Remain");
 		return true;	
 	}
 	//End Method

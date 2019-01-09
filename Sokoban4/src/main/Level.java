@@ -121,7 +121,8 @@ public class Level implements GUI{
 	}
 	
 	//This method gets the filepath for a file
-	public String getFilePath()
+	//Todo, come back and make this a bit better
+	private String getFilePath()
 	{
 		switch(this.levelNumber)
 		{

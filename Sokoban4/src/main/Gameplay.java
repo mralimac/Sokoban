@@ -101,19 +101,53 @@ public class Gameplay implements GUI{
 		resetAll();
 		int levelNumber = this.currentLevel.getLevelNumber();
 		
-		//Creates and adds a label
+		//Creates and adds a HBox for containing the labels
+				
+		
+		
+		HBox winLabelBox = new HBox();
+		winLabelBox.setAlignment(Pos.CENTER);
+		winLabelBox.setPrefWidth(getWidthOfWindow()/2);
+		
 		Label winLabel = new Label("You have won level " + levelNumber);
 		winLabel.setFont(Font.font("Verdana", 15));
-		winLabel.setAlignment(Pos.CENTER);
-		GridPane.setConstraints(winLabel, 1, 0);
-		grid.getChildren().add(winLabel);
+		winLabelBox.getChildren().add(winLabel);
 		
-		//Creates and adds the label indicating how many steps the player took
+		HBox stepLabelBox = new HBox();
+		stepLabelBox.setAlignment(Pos.CENTER);
+		stepLabelBox.setPrefWidth(getWidthOfWindow()/2);
+		
 		Label stepCounter = new Label("You took " + this.stepsTaken + " steps");
 		stepCounter.setFont(Font.font("Verdana", 15));
-		stepCounter.setAlignment(Pos.CENTER);
-		GridPane.setConstraints(stepCounter, 2, 0);
-		grid.getChildren().add(stepCounter);
+		stepLabelBox.getChildren().add(stepCounter);
+		
+		
+		HBox labelBox = new HBox();
+		labelBox.setAlignment(Pos.CENTER);
+		labelBox.setPrefWidth(getWidthOfWindow());
+		labelBox.getChildren().addAll(winLabelBox, stepLabelBox);
+		
+		borderPane.setTop(labelBox);
+		
+		
+		//Creates and adds a HBox for containing the buttons
+		HBox playAgainBox = new HBox();
+		playAgainBox.setPrefWidth(getWidthOfWindow()/3);
+		playAgainBox.setAlignment(Pos.CENTER);
+		
+		HBox menuBox = new HBox();
+		menuBox.setPrefWidth(getWidthOfWindow()/3);
+		menuBox.setAlignment(Pos.CENTER);
+		
+		HBox exitBox = new HBox();
+		exitBox.setPrefWidth(getWidthOfWindow()/3);
+		exitBox.setAlignment(Pos.CENTER);
+		
+		HBox boxOfButtons = new HBox();
+		boxOfButtons.setPrefWidth(getWidthOfWindow());
+		boxOfButtons.getChildren().addAll(playAgainBox, menuBox, exitBox);
+		
+		borderPane.setCenter(boxOfButtons);
 		
 	    //Create button to play again and its listener
 	    Button playAgain = createButton("Reset Level", new EventHandler<MouseEvent>()
@@ -129,8 +163,7 @@ public class Gameplay implements GUI{
 				}
             }
         });
-	    GridPane.setConstraints(playAgain, 0, 1);
-	    grid.getChildren().add(playAgain);
+	    playAgainBox.getChildren().addAll(playAgain);
 	    
 	    //Create button to pick another level and its listener
 	    Button goToLevelMenu = createButton("Go to Main Menu", new EventHandler<MouseEvent>()
@@ -142,8 +175,7 @@ public class Gameplay implements GUI{
 				generateMenu();
             }
         });
-		GridPane.setConstraints(goToLevelMenu, 1, 1);
-		grid.getChildren().add(goToLevelMenu);
+		menuBox.getChildren().addAll(goToLevelMenu);
 		
 		//Create button to exit program
 		Button exitButton = createButton("Exit Program", new EventHandler<MouseEvent>()
@@ -153,8 +185,7 @@ public class Gameplay implements GUI{
 				System.exit(0);
             }
         });
-		GridPane.setConstraints(exitButton, 2, 1);
-		grid.getChildren().add(exitButton);
+		exitBox.getChildren().addAll(exitButton);
 	}
 
 	private Button createButton(String buttonTitle, EventHandler<MouseEvent> doThisOnClick)
@@ -169,6 +200,7 @@ public class Gameplay implements GUI{
 	private void loadLevel(int levelToLoad) throws IOException
 	{
 		resetAll();
+		this.stepsTaken = -1;
 		this.currentLevel = new Level(levelToLoad);
 		primaryStage.setWidth(getWidthOfWindow());
 	    primaryStage.setHeight(getHeightOfWindow());
@@ -229,7 +261,7 @@ public class Gameplay implements GUI{
 		playerObject.getRect().setOnKeyTyped(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent event) {
-				
+				winHandler.checkIfGameIsWon();
 				//This method adds the movement handling for the player
 				
 				if(playerObject.addMovementHandling(event))
@@ -310,11 +342,13 @@ public class Gameplay implements GUI{
 	//This little function wipes out the grid and winHandler
 	public void resetAll()
 	{
+		
 		grid.getChildren().clear();
 		winHandler.clearAll();
 		grid.setVgap(0);
 		grid.setHgap(0);
 		borderPane.setTop(null);
+		borderPane.setCenter(grid);
 	}
 	
 	//End Method

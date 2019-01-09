@@ -1,17 +1,24 @@
 package main;
 
+
+import javafx.event.EventHandler;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
 //Abstraction. This is the general tile class that all tile classes use
-public abstract class Tile extends Coords implements GUI {
+public abstract class Tile implements GUI {
 	
 	//Attributes Section
-	protected Image tileImage;
-	protected Rectangle rectangle;
-	protected String tileType;
+	private int xCoord;
+	private int yCoord;
+	private Image tileImage;
+	private Rectangle rectangle;
+	private String tileType;
+	private Tooltip toolTip;
 	//End Attributes
 	
 	//Constructor Section
@@ -20,12 +27,27 @@ public abstract class Tile extends Coords implements GUI {
 		this.xCoord = xCoord;
 		this.yCoord = yCoord;	
 		this.tileType = tileType;
+		this.tileImage = tileImage;
 		this.rectangle = new Rectangle();
 		rectangle.setWidth(50);
 		rectangle.setHeight(50);
+		rectangle.setFill(new ImagePattern(this.tileImage));
+		createToolTip();
+		getRect().setOnMouseEntered(new EventHandler<MouseEvent>()
+        {
+            @Override
+            public void handle(MouseEvent t) {
+            	addToolTip(t);
+            }
+        });
 		
-		
-		rectangle.setFill(new ImagePattern(tileImage));
+		getRect().setOnMouseExited(new EventHandler<MouseEvent>()
+        {
+            @Override
+            public void handle(MouseEvent t) {
+            	removeToolTip();
+            }
+        });
 		GridPane.setConstraints(rectangle, this.xCoord, this.yCoord);
 		grid.setVgap(0);
 		grid.setHgap(0);
@@ -46,10 +68,60 @@ public abstract class Tile extends Coords implements GUI {
 		return this.rectangle;
 	}
 	
-	//I couldn't work out where I would need overriding, so this method exists here and in player
-	public void overRiding()
+	public void setImage(Image tileImage)
 	{
-		System.out.println("This isn't an example of overriding");
+		this.tileImage = tileImage;
 	}
+	
+	public void setTileType(String tileType)
+	{
+		this.tileType = tileType;
+	}
+	
+	public void setRect(Rectangle rectangle)
+	{
+		this.rectangle = rectangle;
+	}
+	
+	//These 4 methods are a lovely example of encapsulation (getters/setters)
+	public void setXCoord(int xCoord)
+	{
+		this.xCoord = xCoord;		
+	}
+	
+	public void setYCoord(int yCoord)
+	{		
+		this.yCoord = yCoord;
+	}
+	
+	public int getXCoord()
+	{
+		return this.xCoord;
+	}
+	
+	public int getYCoord()
+	{
+		return this.yCoord;
+	}
+	public void setToolTip(Tooltip toolTip)
+	{
+		this.toolTip = toolTip;
+	}
+	
+	public void addToolTip(MouseEvent event)
+	{
+		this.toolTip.show(getRect(), event.getScreenX()+10, event.getScreenY()-50);
+	}
+	
+	public void removeToolTip()
+	{
+		this.toolTip.hide();
+	}
+	
+	public void createToolTip()
+	{
+		this.toolTip = new Tooltip("xCoord: " + this.xCoord + "\nyCoord: "  + this.yCoord + "\nTileType: " + this.tileType);
+	}
+	
 	//End Method
 }

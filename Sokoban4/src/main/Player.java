@@ -1,6 +1,8 @@
 package main;
 
 
+
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
@@ -12,11 +14,12 @@ public class Player extends MoveableTile
 	public Player(int xCoord, int yCoord) {
 		super(xCoord, yCoord, new Image("assets/Player.png", 100, 100, false, false), "Player");
 		new Floor(xCoord, yCoord);
-		System.out.println("Starting Coords: " + xCoord +", " + yCoord);
-		this.tileImage = new Image("assets/Player.png", 100, 100, false, false);
-		rectangle.toFront();
-		rectangle.setFocusTraversable(true);
-		rectangle.setId("Player");
+		setImage(new Image("assets/Player.png", 100, 100, false, false));
+		getRect().toFront();
+		getRect().setFocusTraversable(true);
+		getRect().setId("Player");
+		createToolTip();
+		
 	}
 	//End Constructor
 	
@@ -24,7 +27,7 @@ public class Player extends MoveableTile
 	public boolean addMovementHandling(KeyEvent event)
 	{
 		boolean returnCondition = false;
-		rectangle.toFront();
+		getRect().toFront();
 		int newXCoord = getXCoord();
 		int newYCoord = getYCoord();						
 		returnCondition = false;
@@ -64,20 +67,24 @@ public class Player extends MoveableTile
 
         setXCoord(newXCoord);
         setYCoord(newYCoord);
-        GridPane.setConstraints(rectangle,  getXCoord(), getYCoord());
-        rectangle.toFront();
+        GridPane.setConstraints(getRect(),  getXCoord(), getYCoord());
+        getRect().toFront();
         return returnCondition;
     }
 	
-	//I couldn't work out where I would need overriding, so I made this method which is an example of it
-	public void overRiding()
-	{
-		System.out.println("But this is");
-		System.out.println("*surprised pikachu face*");
+	
+	public void createToolTip()
+		{
+			setToolTip(new Tooltip("xCoord: " + getXCoord() 
+								+ "\nyCoord: "  + getYCoord()
+								+ "\nName: Roah"
+								+ "\nOccupation: Warehouse Keeper"
+								));
+		}
 	}
 	//End Method
 
 	
 
-}
+
 
