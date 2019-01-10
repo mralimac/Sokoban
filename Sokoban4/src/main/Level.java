@@ -21,12 +21,12 @@ public class Level
 	//End Attributes
 	
 	//Constructor Section
-	public Level(int levelNumber, WinHandler winHandle, GridPane grid) throws IOException
+	public Level(int levelNumber, String filePath, WinHandler winHandle, GridPane grid) throws IOException
 	{
 		this.grid = grid;
 		this.winHandle = winHandle;
 		this.levelNumber = levelNumber;
-		loadLevel();
+		loadLevel(filePath);
 	}
 	//End Constructor
 	
@@ -45,9 +45,9 @@ public class Level
 	}
 	
 	//Loads the level by reading the file and calling the buildObjects method
-	public void loadLevel() throws IOException
+	public void loadLevel(String filePath) throws IOException
 	{
-		String filePath = getFilePath();
+		//String filePath = getFilePath();
 		try {
 			FileReader file = new FileReader(filePath);
 			BufferedReader bufferedFile = new BufferedReader(file);
@@ -125,21 +125,6 @@ public class Level
 	public Player getPlayer()
 	{
 		return this.thePlayer;
-	}
-	
-	//This method gets the filepath for a file
-	//Todo, come back and make this a bit better
-	private String getFilePath()
-	{
-		switch(this.levelNumber)
-		{
-		case 1: return "src/levels/level1.txt";
-		case 2: return "src/levels/level2.txt";
-		case 3: return "src/levels/level3.txt";
-		case 4: return "src/levels/level4.txt";
-		case 5: return "src/levels/level5.txt";
-		}
-		return null;
 	}
 	//End Method
 	

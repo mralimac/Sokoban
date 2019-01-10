@@ -211,7 +211,7 @@ public class Gameplay{
 	{
 		resetAll();
 		this.stepsTaken = 0;
-		this.currentLevel = new Level(levelToLoad, winHandle, grid);
+		this.currentLevel = new Level(levelToLoad, listOfFiles.get(levelToLoad-1).getAbsolutePath(), winHandle, grid);
 		primaryStage.setWidth(getWidthOfWindow());
 	    primaryStage.setHeight(getHeightOfWindow());
 	    
