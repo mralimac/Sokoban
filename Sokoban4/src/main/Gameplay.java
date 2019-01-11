@@ -163,13 +163,15 @@ public class Gameplay{
 		int stepsTaken = this.stepsTaken;
 		
 		//Attempts to call the API to update playerscore
-		try {
-			updatePlayerScore(levelNumber, stepsTaken);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-			System.out.print("Failed to update API");
-		}
-		
+		//In a new thread to allow Async operation
+		new Thread(() -> { 
+			try {
+				updatePlayerScore(levelNumber, stepsTaken);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+				System.out.print("Failed to update API");
+			}
+		}).start();
 		
 		//Creates and adds a HBox for containing the labels
 		HBox winLabelBox = new HBox();

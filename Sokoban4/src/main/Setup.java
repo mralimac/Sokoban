@@ -67,7 +67,7 @@ public class Setup
 			input = new FileInputStream("config.properties");					
 			
 			proFile.load(input);
-			if(proFile.getProperty("PlayerID").equals(null)) 
+			if(proFile.getProperty("PlayerID").equals(null) || proFile.getProperty("PlayerID").equals("")) 
 			{
 				return false;
 			}
