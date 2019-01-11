@@ -39,12 +39,23 @@ public class Gameplay{
 	public Gameplay(Stage primaryStage, BorderPane borderPane, GridPane grid, int playerID)
 	{
 		//This block gets all the level files in the folder
-		String folderPath = "src/levels/";
+		String folderPath = "src/level/";
 		File levelFolder = new File(folderPath);
 		File[] listOfLevelFiles = levelFolder.listFiles();
 		this.primaryStage = primaryStage;
-		int numberOfFiles = listOfLevelFiles.length;
-		System.out.println("Level Files loaded");
+		int numberOfFiles = 0;
+		if(levelFolder.equals(null)) {
+			numberOfFiles = listOfLevelFiles.length;
+			System.out.println(numberOfFiles + " Level Files successfully loaded");
+		}
+		else
+		{
+			numberOfFiles = 0;
+			System.out.println("Warning No Level Files are present");
+			System.out.println("Exiting Sokoban");
+			System.exit(0);
+		}
+		
 		this.borderPane = borderPane;
 		this.grid = grid;
 		this.playerID = playerID;
