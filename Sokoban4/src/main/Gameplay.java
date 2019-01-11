@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import javafx.event.EventHandler;
@@ -43,6 +44,7 @@ public class Gameplay{
 		File[] listOfLevelFiles = levelFolder.listFiles();
 		this.primaryStage = primaryStage;
 		int numberOfFiles = listOfLevelFiles.length;
+		System.out.println("Level Files loaded");
 		this.borderPane = borderPane;
 		this.grid = grid;
 		this.playerID = playerID;
@@ -58,13 +60,21 @@ public class Gameplay{
 	}
 	//End Constructor
 	
+	
+	
+	
 	//Method Section
 	//This method generates the main menu and its buttons
 	private void generateMenu()
 	{
+		
 		primaryStage.setWidth(getWidthOfWindow());
 	    primaryStage.setHeight(getHeightOfWindow());
 		resetAll();
+		borderPane.setCenter(null);
+		borderPane.setLeft(grid);
+		
+		
 		int gridPaneY = 0;
 		
 		//Creates and adds the label
@@ -72,6 +82,54 @@ public class Gameplay{
 		GridPane.setConstraints(loadLevelLabel, 0, gridPaneY);
 		grid.getChildren().add(loadLevelLabel);
 		loadLevelLabel.setFont(Font.font("Verdana", 15));
+		
+		
+		
+		//Currently cannot use a new thread as JavaFX doesn't like that
+		//Need to retweak this a bit
+		//new Thread(() -> {
+		JSONObject scoreBoardJSON = getScoreboard();
+		try {
+			JSONArray scoreBoardJSONArray = scoreBoardJSON.getJSONArray("records");
+			int GridPaneY = 0;
+			GridPane scoreBoardGrid = new GridPane();
+			for(int e = 0; e < scoreBoardJSONArray.length(); e++)
+			{
+				JSONObject jsonObject = scoreBoardJSONArray.getJSONObject(e);
+				String playerIDString = jsonObject.getString("playerID");
+				String level1ScoreString = jsonObject.getString("level1Score");
+				String level2ScoreString = jsonObject.getString("level2Score");
+				String level3ScoreString = jsonObject.getString("level3Score");
+				String level4ScoreString = jsonObject.getString("level4Score");
+				String level5ScoreString = jsonObject.getString("level5Score");
+				HBox hBox = new HBox();
+				hBox.setAlignment(Pos.CENTER_LEFT);
+				
+				String cssLayout = "-fx-border-color: red;\n" +
+		                   "-fx-border-insets: 5;\n" +
+		                   "-fx-border-width: 3;\n" +
+		                   "-fx-border-style: dashed;\n";
+				hBox.setStyle(cssLayout);
+				hBox.setMinWidth(getWidthOfWindow()/4);
+				Label playerID = new Label("Player: " + playerIDString + "\n"
+						+ "Level 1 Score: " + level1ScoreString + "\n"
+						+ "Level 2 Score: " + level2ScoreString + "\n"
+						+ "Level 3 Score: " + level3ScoreString + "\n"
+						+ "Level 4 Score: " + level4ScoreString + "\n"
+						+ "Level 5 Score: " + level5ScoreString	+ "\n"					
+						);				
+				hBox.getChildren().addAll(playerID);
+				GridPane.setConstraints(hBox, 0, GridPaneY);
+				scoreBoardGrid.getChildren().add(hBox);
+				GridPaneY++;
+				
+			}
+			borderPane.setRight(scoreBoardGrid);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			System.out.println("JSON Malformed");
+		}
+		//}).start();
 		
 		//Checks every file in the folder and adds a button for each
 		for(int i = 0; i < listOfFiles.size(); i++)
@@ -99,7 +157,7 @@ public class Gameplay{
 	        });
 			
 			grid.setVgap(10);
-			button.setMinWidth(500);			
+			button.setMinWidth(getWidthOfWindow()/2 + getWidthOfWindow()/4);			
 			button.setMinHeight(50);
 			gridPaneY = gridPaneY + 2;
 			GridPane.setConstraints(button, 0, gridPaneY);
@@ -144,15 +202,32 @@ public class Gameplay{
 		return null;
 	}
 	
-	//Gets the players score for a level and pushes it to an API for multiplayer scoreboard
+	//This method retrieves the scoreboard on the API
+	private JSONObject getScoreboard()
+	{
+		String url = "https://mralimac.com/sokobanAPI2/read.php";
+		URL urlObject = null;
+		try {
+			urlObject = new URL(url);
+			return sendToAPI(urlObject);
+		} catch (MalformedURLException e1) {			
+			e1.printStackTrace();
+			return null;
+		}catch (IOException e) {			
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	//This method creates the URL for the API to update the players score
 	private void updatePlayerScore(int levelNumber, int levelScore) throws IOException
 	{
 		String url = "https://mralimac.com/sokobanAPI2/write.php?id=" + this.playerID + "&level="+ levelNumber + "&steps="+levelScore;		
-		System.out.println(url);
 		URL urlObject = new URL(url);		
 		sendToAPI(urlObject);
 	}
 	
+	//This method generates the WinScreen when a level is won. It triggers the API too
 	private void generateWinScreen()
 	{
 		primaryStage.setWidth(getWidthOfWindow());
@@ -257,6 +332,7 @@ public class Gameplay{
 		exitBox.getChildren().addAll(exitButton);
 	}
 
+	//This is a method to assist with making buttons
 	private Button createButton(String buttonTitle, EventHandler<MouseEvent> doThisOnClick)
 	{
 		Button button = new Button(buttonTitle);
@@ -397,6 +473,7 @@ public class Gameplay{
 		this.currentLevel = null;
 	}
 	
+	//Returns the array of files
 	public ArrayList<File> getListOfFiles()
 	{
 		return this.listOfFiles;
@@ -411,12 +488,15 @@ public class Gameplay{
 	//This little function wipes out the grid and winHandler
 	public void resetAll()
 	{
-		
 		grid.getChildren().clear();
 		winHandle.clearAll();
 		grid.setVgap(0);
 		grid.setHgap(0);
 		borderPane.setTop(null);
+		borderPane.setCenter(null);
+		borderPane.setRight(null);
+		borderPane.setLeft(null);
+		borderPane.setBottom(null);
 		borderPane.setCenter(grid);
 	}
 	

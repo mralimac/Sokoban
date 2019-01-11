@@ -72,7 +72,6 @@ public class WinHandler
 				return false;
 			}
 		}
-		System.out.println("No Diamonds Remain");
 		return true;	
 	}
 	//End Method

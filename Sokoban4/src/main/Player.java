@@ -5,11 +5,14 @@ package main;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 
 
 public class Player extends MoveableTile
 {
+	private Tooltip playerToolTip;
+	
 	//Constructor Section
 	public Player(int xCoord, int yCoord, GridPane grid) {
 		super(xCoord, yCoord, new Image("assets/Player.png", 100, 100, false, false), "Player", grid);
@@ -20,7 +23,7 @@ public class Player extends MoveableTile
 		setTileImage(new Image("assets/Player.png", 100, 100, false, false));
 		getRect().toFront();
 		getRect().setFocusTraversable(true);
-		createToolTip();
+		//createToolTip();
 		
 	}
 	//End Constructor
@@ -75,16 +78,23 @@ public class Player extends MoveableTile
     }
 	
 	//This method overrides the method in Tile
-	public void createToolTip()
+	public void addToolTip(MouseEvent event)
 	{
-		setToolTip(new Tooltip("xCoord: " + getXCoord() 
+		this.playerToolTip = new Tooltip("xCoord: " + getXCoord() 
 							+ "\nyCoord: "  + getYCoord()
 							+ "\nName: Roah"
 							+ "\nOccupation: Warehouse Keeper"
-							));
+							);
+							
+		this.playerToolTip.show(getRect(), event.getScreenX()+10, event.getScreenY()-50);
 	}
 	
-
+	//This method removes the tooltip
+	public void removeToolTip()
+	{
+		this.playerToolTip.hide();
+		this.playerToolTip = null;
+	}
 	
 	@Override
 	public void setTileImage(Image image) {
