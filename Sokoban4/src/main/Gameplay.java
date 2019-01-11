@@ -1,8 +1,12 @@
 package main;
 
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -15,6 +19,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import org.json.*;
 
 public class Gameplay{
 	
@@ -26,10 +31,11 @@ public class Gameplay{
 	private BorderPane borderPane;
 	private WinHandler winHandle;
 	private GridPane grid;
+	private int playerID;
 	//End Attributes
 	
 	//Constructor Section
-	public Gameplay(Stage primaryStage, BorderPane borderPane, GridPane grid)
+	public Gameplay(Stage primaryStage, BorderPane borderPane, GridPane grid, int playerID)
 	{
 		//This block gets all the level files in the folder
 		String folderPath = "src/levels/";
@@ -39,6 +45,7 @@ public class Gameplay{
 		int numberOfFiles = listOfLevelFiles.length;
 		this.borderPane = borderPane;
 		this.grid = grid;
+		this.playerID = playerID;
 		this.winHandle = new WinHandler(grid);
 		
 		for(int i = 0; i < numberOfFiles; i++)
@@ -103,6 +110,49 @@ public class Gameplay{
 		
 	}
 	
+	//A method to call an API and return its reply as JSON
+	private JSONObject sendToAPI(URL urlObject) throws IOException
+	{
+		HttpURLConnection conn = (HttpURLConnection) urlObject.openConnection();
+		conn.setRequestMethod("GET");
+		conn.setRequestProperty("User-Agent", "Mozilla/5.0");
+		
+		int responseCode = conn.getResponseCode();
+		if(responseCode != 200)
+		{
+			System.out.println("Code: "+ responseCode);
+			System.out.print("API miscommuncation occured. Inform Ali");
+		}
+
+			
+		BufferedReader input = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		String inputLine;
+		StringBuffer response = new StringBuffer();
+		while ((inputLine = input.readLine()) != null) {
+	     	response.append(inputLine);
+	    }
+		input.close();
+		
+		JSONObject jsonReply;
+		try {
+			jsonReply = new JSONObject(response.toString());
+			return jsonReply;
+		} catch (JSONException e) {
+			e.printStackTrace();
+			System.out.println("JSON Malformed");
+		}
+		return null;
+	}
+	
+	//Gets the players score for a level and pushes it to an API for multiplayer scoreboard
+	private void updatePlayerScore(int levelNumber, int levelScore) throws IOException
+	{
+		String url = "https://mralimac.com/sokobanAPI2/write.php?id=" + this.playerID + "&level="+ levelNumber + "&steps="+levelScore;		
+		System.out.println(url);
+		URL urlObject = new URL(url);		
+		sendToAPI(urlObject);
+	}
+	
 	private void generateWinScreen()
 	{
 		primaryStage.setWidth(getWidthOfWindow());
@@ -110,11 +160,18 @@ public class Gameplay{
 	    grid.setVgap(20);
 		resetAll();
 		int levelNumber = this.currentLevel.getLevelNumber();
+		int stepsTaken = this.stepsTaken;
+		
+		//Attempts to call the API to update playerscore
+		try {
+			updatePlayerScore(levelNumber, stepsTaken);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			System.out.print("Failed to update API");
+		}
+		
 		
 		//Creates and adds a HBox for containing the labels
-				
-		
-		
 		HBox winLabelBox = new HBox();
 		winLabelBox.setAlignment(Pos.CENTER);
 		winLabelBox.setPrefWidth(getWidthOfWindow()/2);
@@ -127,7 +184,7 @@ public class Gameplay{
 		stepLabelBox.setAlignment(Pos.CENTER);
 		stepLabelBox.setPrefWidth(getWidthOfWindow()/2);
 		
-		Label stepCounter = new Label("You took " + this.stepsTaken + " steps");
+		Label stepCounter = new Label("You took " + stepsTaken + " steps");
 		stepCounter.setFont(Font.font("Verdana", 15));
 		stepLabelBox.getChildren().add(stepCounter);
 		

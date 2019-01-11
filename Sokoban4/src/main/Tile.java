@@ -34,6 +34,8 @@ public abstract class Tile extends GUI implements TilePlacement{
 		rectangle.setWidth(50);
 		rectangle.setHeight(50);
 		rectangle.setFill(new ImagePattern(this.tileImage));
+		
+		//I added a tooltip to give myself an opporunity to showcase Overriding. it also helps with bug solving
 		getRect().setOnMouseEntered(new EventHandler<MouseEvent>()
         {
             @Override
@@ -49,6 +51,7 @@ public abstract class Tile extends GUI implements TilePlacement{
             	removeToolTip();
             }
         });
+		
 		GridPane.setConstraints(rectangle, this.xCoord, this.yCoord);
 		getGrid().setVgap(0);
 		getGrid().setHgap(0);
