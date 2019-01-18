@@ -17,10 +17,6 @@ public class Player extends MoveableTile
 	public Player(int xCoord, int yCoord, GridPane grid) {
 		super(xCoord, yCoord, new Image("assets/Player.png", 100, 100, false, false), "Player", grid);
 		new Floor(xCoord, yCoord, grid);
-		setTileXCoord(xCoord);
-		setTileYCoord(yCoord);
-		setTileType("Player");
-		setTileImage(new Image("assets/Player.png", 100, 100, false, false));
 		getRect().toFront();
 		getRect().setFocusTraversable(true);
 		//createToolTip();
@@ -70,8 +66,8 @@ public class Player extends MoveableTile
         
        
 
-        setTileXCoord(newXCoord);
-        setTileYCoord(newYCoord);
+        setXCoord(newXCoord);
+        setYCoord(newYCoord);
         GridPane.setConstraints(getRect(),  getXCoord(), getYCoord());
         getRect().toFront();
         return returnCondition;
@@ -95,30 +91,6 @@ public class Player extends MoveableTile
 		this.playerToolTip.hide();
 		this.playerToolTip = null;
 	}
-	
-	@Override
-	public void setTileImage(Image image) {
-		setImage(image);
-	}
-	
-	@Override
-	public void setTileType(String tileType) {
-		getRect().setId(tileType);
-		
-	}
-	
-	@Override
-	public void setTileXCoord(int xCoord) {
-		setXCoord(xCoord);
-		
-	}
-	
-	@Override
-	public void setTileYCoord(int yCoord) {
-		setYCoord(yCoord);
-		
-	}
-	
 }
 	//End Method
 

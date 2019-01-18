@@ -11,7 +11,7 @@ import javafx.scene.shape.Rectangle;
 
 //Abstraction. This is the general tile class that all tile classes use
 //As this extends GUI and uses an Interface, this makes this class (and all the subclasses) polymorphic
-public abstract class Tile extends GUI implements TilePlacement{
+public abstract class Tile extends GraphicalElement{
 	
 	//Attributes Section
 	private int xCoord;

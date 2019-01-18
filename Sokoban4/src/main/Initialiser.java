@@ -13,7 +13,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-public class Setup
+public class Initialiser
 {
 	//Attributes Section
 	private Stage primaryStage; 
@@ -23,7 +23,7 @@ public class Setup
 	//End Attributes
 	
 	//Constructor Section
-	public Setup(Stage primaryStage)
+	public Initialiser(Stage primaryStage)
 	{
 		this.borderPane = new BorderPane();
 		this.primaryStage = primaryStage;

@@ -17,7 +17,7 @@ public class Main extends Application
 	
 	public void start(Stage primaryStage) throws Exception
 	{	
-		Setup setup = new Setup(primaryStage);
+		Initialiser setup = new Initialiser(primaryStage);
 		new Gameplay(primaryStage, setup.getBorderPane(), setup.getGridPane(), setup.getPlayerID());
 	}
 }

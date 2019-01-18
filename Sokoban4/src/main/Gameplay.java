@@ -39,12 +39,12 @@ public class Gameplay{
 	public Gameplay(Stage primaryStage, BorderPane borderPane, GridPane grid, int playerID)
 	{
 		//This block gets all the level files in the folder
-		String folderPath = "src/level/";
+		String folderPath = "src/levels/";
 		File levelFolder = new File(folderPath);
 		File[] listOfLevelFiles = levelFolder.listFiles();
 		this.primaryStage = primaryStage;
 		int numberOfFiles = 0;
-		if(levelFolder.equals(null)) {
+		if(!levelFolder.equals(null)) {
 			numberOfFiles = listOfLevelFiles.length;
 			System.out.println(numberOfFiles + " Level Files successfully loaded");
 		}
@@ -180,7 +180,7 @@ public class Gameplay{
 	}
 	
 	//A method to call an API and return its reply as JSON
-	private JSONObject sendToAPI(URL urlObject) throws IOException
+	private JSONObject callAPI(URL urlObject) throws IOException
 	{
 		HttpURLConnection conn = (HttpURLConnection) urlObject.openConnection();
 		conn.setRequestMethod("GET");
@@ -220,7 +220,7 @@ public class Gameplay{
 		URL urlObject = null;
 		try {
 			urlObject = new URL(url);
-			return sendToAPI(urlObject);
+			return callAPI(urlObject);
 		} catch (MalformedURLException e1) {			
 			e1.printStackTrace();
 			return null;
@@ -235,7 +235,7 @@ public class Gameplay{
 	{
 		String url = "https://mralimac.com/sokobanAPI2/write.php?id=" + this.playerID + "&level="+ levelNumber + "&steps="+levelScore;		
 		URL urlObject = new URL(url);		
-		sendToAPI(urlObject);
+		callAPI(urlObject);
 	}
 	
 	//This method generates the WinScreen when a level is won. It triggers the API too
@@ -254,8 +254,9 @@ public class Gameplay{
 			try {
 				updatePlayerScore(levelNumber, stepsTaken);
 			} catch (IOException e1) {
-				e1.printStackTrace();
-				System.out.print("Failed to update API");
+				//e1.printStackTrace();
+				System.out.println("Failed to update API");
+				System.out.println("Warning! Your score wasn't updated");
 			}
 		}).start();
 		
